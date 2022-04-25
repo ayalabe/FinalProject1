@@ -100,6 +100,20 @@ public class AppManager {
 	
 	private void login(Phone phoneNumber) {
 		
+		for (int i = 0; AccountOwner[i]!=null; i++) {
+			if(AccountOwner[i].getPhone().getAreaCode() == phoneNumber.getAreaCode() && AccountOwner[i].getPhone().getNumber() == phoneNumber.getNumber()) {
+				currUser = AccountOwner[i];
+			}
+		}
+	}
+	
+	public static AccountOwner getOwnerByPhoneNum(Phone phoneNumber) {
+		for (int i = 0; AccountOwner[i]!=null; i++) {
+			if(AccountOwner[i].getPhone().getAreaCode() == phoneNumber.getAreaCode() && AccountOwner[i].getPhone().getNumber() == phoneNumber.getNumber()) {
+				return AccountOwner[i];
+			}
+		}
+		return null;
 	}
 	
 	private Credentials createUserNameAndPassword() {
@@ -152,10 +166,6 @@ public class AppManager {
 	}
 	private void logout() {
 		currUser = null;
-	}
-	private static AccountOwner getOwnerByPhoneNum(Phone phoneNumber) {
-		return null;
-		
 	}
 
 

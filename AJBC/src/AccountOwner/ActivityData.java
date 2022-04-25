@@ -7,6 +7,47 @@ public class ActivityData {
 	private ActivityName activityName;
 	private Double balanceChange;
 	private LocalDateTime timeStamp;
+	
+	public ActivityName getActivityName() {
+		return activityName;
+	}
+
+
+	public void setActivityName(ActivityName activityName) {
+		this.activityName = activityName;
+	}
+
+
+	public Double getBalanceChange() {
+		return balanceChange;
+	}
+
+
+	public void setBalanceChange(Double balanceChange) {
+		this.balanceChange = balanceChange;
+	}
+
+
+	public LocalDateTime getTimeStamp() {
+		return timeStamp;
+	}
+
+
+	public void setTimeStamp(LocalDateTime timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+
+	public String getInfo() {
+		return info;
+	}
+
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+
 	private String info;
 	
 	

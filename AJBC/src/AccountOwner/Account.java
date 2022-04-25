@@ -2,6 +2,8 @@ package AccountOwner;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class Account{
 	
@@ -31,7 +33,12 @@ public class Account{
 	}
 	
 	public void activityData(LocalDate start) {
-		
+		for (int i = 0; this.activityData[i]!=null; i++) {
+			if(this.activityData[i].getTimeStamp().toLocalDate().isAfter(start)) {
+				System.out.println(this.activityData[i]);
+			}
+				
+		}
 	}
 	
 	public Account(double balance) {
@@ -43,11 +50,11 @@ public class Account{
 		return balance;
 	}
 
-	private void setBalance(double balance) {
-		this.balance = balance;
+	public void setBalance(double balance) {
+		this.balance += balance;
 	}
 
-	private AccountProperties getAccountProperties() {
+	public AccountProperties getAccountProperties() {
 		return accountProperties;
 	}
 
@@ -81,6 +88,18 @@ public class Account{
 
 	private long getAccountNumber() {
 		return accountNumber;
+	}
+	
+	public float WithdrawalDaly(LocalDate start) {
+		float WithdrawalDaly = 0;
+		for (int i = 0; this.activityData[i]!=null; i++) {
+			if(this.activityData[i].getTimeStamp().toLocalDate().isEqual(start)) {
+				if(this.activityData[i].getActivityName().equals(ActivityName.WITHDRAWAL)) {
+					WithdrawalDaly += this.activityData[i].getBalanceChange();
+				}
+			}	
+		}
+		return WithdrawalDaly;
 	}
 	
 }

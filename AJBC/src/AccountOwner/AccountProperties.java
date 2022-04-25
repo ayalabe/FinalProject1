@@ -22,7 +22,7 @@ public enum AccountProperties {
 		this.feeMin = feeMin;
 		this.setFeeMax(feeMax);
 		this.MaxLoanAmount = MaxLoanAmount;
-		this.MaxWithdrawalAmount = MaxWithdrawalAmount;
+		this.setMaxWithdrawalAmount(MaxWithdrawalAmount);
 		
 	}
 	
@@ -58,6 +58,14 @@ public enum AccountProperties {
 
 	public void setFeeMax(double feeMax) {
 		this.feeMax = feeMax;
+	}
+
+	public double getMaxWithdrawalAmount() {
+		return MaxWithdrawalAmount;
+	}
+
+	public void setMaxWithdrawalAmount(double maxWithdrawalAmount) {
+		MaxWithdrawalAmount = maxWithdrawalAmount;
 	}
 
 	

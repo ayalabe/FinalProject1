@@ -37,7 +37,7 @@ public class BankManager extends AccountOwner{
 	}
 	@Override
 	public String toString() {
-		return super.toString() + "BankManager [usersToApprove="  + Arrays.toString(usersToApprove) + ", index=" + index
+		return super.toString() + "BankManager [usersToApprove=" + ", index=" + index
 				+ ", accProperties=" + accProperties + "]";
 	}
 
