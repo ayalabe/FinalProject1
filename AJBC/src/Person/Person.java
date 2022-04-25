@@ -7,13 +7,11 @@ public class Person {
 	private String lastName;
 	private Phone phone;
 	private LocalDate bitrthDate;
-	private double monthlyIncome;
 	
 	public Person(String firstName, String lastName, int areaCode, float number, LocalDate bitrthDate) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.phone.setAreaCode(areaCode);
-		this.phone.setNumber(number);
+		phone = new Phone(areaCode, number);
 		this.bitrthDate = bitrthDate;
 	}
 
@@ -47,14 +45,6 @@ public class Person {
 
 	public void setBitrthDate(LocalDate bitrthDate) {
 		this.bitrthDate = bitrthDate;
-	}
-
-	public double getMonthlyIncome() {
-		return monthlyIncome;
-	}
-
-	public void setMonthlyIncome(double monthlyIncome) {
-		this.monthlyIncome = monthlyIncome;
 	}
 
 	
