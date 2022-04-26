@@ -1,15 +1,10 @@
 package BankManager;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
 import AccountOwner.Account;
 import AccountOwner.AccountOwner;
 import AccountOwner.AccountProperties;
-import AccountOwner.ActivityName;
 import AccountOwner.Credentials;
-import AppManager.AppManager;
 
 public class BankManager extends AccountOwner{
 	private AccountOwner[] usersToApprove;

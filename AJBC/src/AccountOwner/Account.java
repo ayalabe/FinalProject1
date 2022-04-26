@@ -2,8 +2,6 @@ package AccountOwner;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 public class Account{
 	
@@ -62,10 +60,6 @@ public class Account{
 		return accountProperties;
 	}
 
-	private void setAccountProperties(AccountProperties accountProperties) {
-		this.accountProperties = accountProperties;
-	}
-
 	public ActivityData[] getActivityData() {
 		return activityData;
 	}
@@ -74,26 +68,11 @@ public class Account{
 		this.activityData[index++] = activityData;
 	}
 
-	private double getIntresRate() {
-		return intresRate;
-	}
-
-	private void setIntresRate(double intresRate) {
-		this.intresRate = intresRate;
-	}
-
-	private double getFee() {
-		return fee;
-	}
-
-	private void setFee(double fee) {
-		this.fee = fee;
-	}
-
-	private long getAccountNumber() {
-		return accountNumber;
-	}
-	
+/**
+ * Returns the number of WithdrawalDaly the user made that day
+ * @param start
+ * @return
+ */
 	public float WithdrawalDaly(LocalDate start) {
 		float WithdrawalDaly = 0;
 		for (int i = 0; this.activityData[i]!=null; i++) {

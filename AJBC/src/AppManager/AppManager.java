@@ -1,19 +1,13 @@
 package AppManager;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.Scanner;  // Import the Scanner class
-
 import AccountOwner.Account;
 import AccountOwner.AccountOwner;
-import AccountOwner.AccountProperties;
-import AccountOwner.ActivityData;
 import AccountOwner.Credentials;
 import BankManager.BankManager;
-import Person.Person;
 import Person.Phone;
-import Runner.Menu;
+
 
 /**
  * Class AppManager controller all the other class
@@ -42,7 +36,7 @@ public class AppManager {
 
 	public void showMenu() {
 		System.out.println("Please select a action you want to perform:");
-		System.out.println("1. Open Account\n" + "2. Login Use\n" + "3. Check Balance\n" + "4. Produce Activity Report\n"
+		System.out.println("0. logout\n" + "1. Open Account\n" + "2. Login Use\n" +"3. Check Balance\n" + "4. Produce Activity Report\n"
 				+ "5. Make a deposit\n" + "6. Withdrawal\n" + "7. Transfer funds\n" + "8. Pay bill\n" + "9. Get Loan");
 	}
 
@@ -50,21 +44,19 @@ public class AppManager {
 	public void callAppManager(int opt) {
 		switch(opt){
 		case 0: 
-			System.out.println("by by");
+			logout();
 		case 1:
 			OpenAccount();
-			System.out.println(manager);
 			break;
 		case 2: 
 			login();
-			System.out.println(manager);
 		case 3: 
-			this.currUser.checkBalance();
+			currUser.checkBalance();
 			break;
 		case 4: 
 			System.out.println("Enter a LocalDate");
 			LocalDate date =addDate();
-			this.currUser.ProduceReport(date);
+			currUser.ProduceReport(date);
 			break;
 		case 5: 
 			currUser.MakeDeposit();
@@ -155,24 +147,28 @@ public class AppManager {
 		Credentials credentials = new Credentials(newUserName, newPassword);
 		return credentials;
 	}
-
+/**
+ * scan from the user the LocalDate
+ * @return 
+ */
 	public static LocalDate addDate() {
-
 		int day = Integer.parseInt(scan.nextLine());
 		int month = Integer.parseInt(scan.nextLine());
 		int year = Integer.parseInt(scan.nextLine());
-
 		LocalDate ld = LocalDate.of(year, month, day);
 		return ld;
 	}
 
+	/**
+	 * create new user and add to the list manager to apruve
+	 */
 	public void OpenAccount() {
 
 		if(!flageManager) {
 			Account account = new Account(70000);
 			Credentials credential = new Credentials("manager", "man123");
 			this.manager = new BankManager("Manager", "man", 052, 5051524, LocalDate.now(), account, 70000, credential);
-			this.AccountOwner[index++] = this.manager;
+			AccountOwner[index++] = this.manager;
 			this.flageManager = true;
 		}
 
@@ -184,14 +180,14 @@ public class AppManager {
 		String firstName = scan.nextLine();
 		String lastName = scan.nextLine();
 		int areaCode = Integer.parseInt(scan.nextLine());
-		float number = Float.parseFloat(scan.nextLine());;
+		float number = Float.parseFloat(scan.nextLine());
 		LocalDate date =addDate();
 		double monthlyIncome = Double.parseDouble(scan.nextLine());
 		Credentials credentials = createUserNameAndPassword();
 
 		AccountOwner newOwner = new AccountOwner(firstName, lastName, areaCode, number, date, null, monthlyIncome, credentials,this.manager);
 		newOwner.getBankManager().setUsersToApprove(newOwner);
-		this.AccountOwner[index++] = newOwner;
+		AccountOwner[index++] = newOwner;
 		System.out.println(newOwner);
 
 	}
