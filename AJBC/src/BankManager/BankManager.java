@@ -1,15 +1,17 @@
 package BankManager;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import AccountOwner.Account;
 import AccountOwner.AccountOwner;
 import AccountOwner.AccountProperties;
+import AccountOwner.ActivityName;
 import AccountOwner.Credentials;
+import AppManager.AppManager;
 
 public class BankManager extends AccountOwner{
-	
 	private AccountOwner[] usersToApprove;
 	private int index = 0;
 	private AccountProperties accProperties;
@@ -26,8 +28,11 @@ public class BankManager extends AccountOwner{
 		index++;
 	}
 
+	public AccountOwner[] getUsersToApprove() {
+		return usersToApprove;
+	}
 
-	private void setAndApproveAcc() {
+	public void setAndApproveAcc() {
 		for (int i = 0; this.usersToApprove[i]!=null; i++) {
 			accProperties = AccountProperties.properties(this.usersToApprove[i].getMonthlyIncome());
 			Account account = new Account(0,accProperties,null,accProperties.getIntresRateMax(),accProperties.getFeeMax());
@@ -35,18 +40,27 @@ public class BankManager extends AccountOwner{
 		}
 		usersToApprove = null;
 	}
+	/*
+	 */
 	@Override
 	public String toString() {
 		return super.toString() + "BankManager [usersToApprove=" + ", index=" + index
 				+ ", accProperties=" + accProperties + "]";
 	}
+	
+//	public void ProduceReport(LocalDate start) {
+//		System.out.println("Enter a LocalDate");
+//		LocalDate date =AppManager.addDate();
+//		this.checkBalance();
+//		this.account.activityData(date);
+//	}
 
-
-	private void addUserToApprove(AccountOwner accountOwner) {
-		
+//	public void getLoan() {
+//		System.out.println("Enter a LocalDate");
+//		LocalDate date =AppManager.addDate();
+//		this.checkBalance();
+//		this.account.activityData(date);
+//		
+//	}
+	
 	}
-	private void produceReport(LocalDate start) {
-		
-	}
-
-}

@@ -1,6 +1,7 @@
 package AccountOwner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -12,10 +13,11 @@ import Person.Phone;
 public class AccountOwner extends Person{
 	
 	private static Scanner scan = new Scanner(System.in);
-	private Account account;
+	protected Account account;
 	private double monthlyIncome;
 	public Credentials credentials;
 	private BankManager bankManager;
+	private LocalDateTime lock = null;
 
 	public double getMonthlyIncome() {
 		return monthlyIncome;
@@ -69,6 +71,7 @@ public class AccountOwner extends Person{
 	}
 	
 	public void ProduceReport(LocalDate start) {
+		this.checkBalance();
 		this.account.activityData(start);
 		
 	}
@@ -83,29 +86,37 @@ public class AccountOwner extends Person{
 		return codRand;
 	}
 	
+	private void setFee(double rate, double mony) {
+		double fee = (rate/100) * mony;
+		this.account.setBalance(-fee);
+		this.bankManager.account.setBalance(fee);
+	}
+	
 	public void MakeDeposit() {
 		String code = authenticationCode();
-		int mony;
+		double mony;
 		System.out.println("Enter the code that appears on the screen" + code);
 		String codeUser = scan.nextLine();
 		if(code.equals(codeUser)) {
 			System.out.println("Enter a amount of funds to deposit:");
-			mony = scan.nextInt();
+			mony = scan.nextDouble();
+			setFee(this.account.getAccountProperties().getFeeMax(), mony);
 			this.account.setBalance(mony);
+			updateActiviti(ActivityName.DEPOSIT,mony,LocalDateTime.now(),"Make Deposit");
 		}
 		
 	}
 	
-	
-	
 	public void Withdrawal() {
 		System.out.println("Enters the amount of funds to withdraw");
-		float withdraw = scan.nextFloat();
-		if(withdraw + this.account.WithdrawalDaly(LocalDate.now()) > this.account.getAccountProperties().getMaxWithdrawalAmount())
+		double withdraw = scan.nextDouble();
+		if(withdraw + this.account.WithdrawalDaly(LocalDate.now()) > this.account.getAccountProperties().getMaxWithdrawalAmount() && this.account.getBalance() < withdraw)
 			System.out.println("You can not withdraw this amount");
 		else {
 			this.account.setBalance(-withdraw);
+			setFee(this.account.getAccountProperties().getFeeMax(), withdraw);
 			System.out.println("successful withdrawal");
+			updateActiviti(ActivityName.WITHDRAWAL,withdraw,LocalDateTime.now(),"Make Withdrawal");
 		}
 	}
 	
@@ -115,15 +126,94 @@ public class AccountOwner extends Person{
 		int areaCode = scan.nextInt();
 		float number = scan.nextFloat();
 		Phone phone = new Phone(areaCode, number);
-		float transfer = scan.nextFloat();
+		double transfer = scan.nextDouble();
 		AccountOwner userTransfer = AppManager.getOwnerByPhoneNum(phone);
 		if(transfer > 2000)
 			System.out.println("Only an amount smaller than 2000 can be transferred");
 		else {
 			userTransfer.account.setBalance(transfer);
 			this.account.setBalance(-transfer);
+			setFee(this.account.getAccountProperties().getFeeMax(), transfer);
+			System.out.println("successful Transfe");
+			updateActiviti(ActivityName.TRANSFER,transfer,LocalDateTime.now(),"Make Transfer Funds");
 		}
 		
+	}
+	
+	public void TransferFunds(BankManager bankManager, double transfer)
+	{
+		if(transfer > 500) {
+			System.out.println("Only an amount smaller than 2000 can be transferred");
+		}
+		else {
+			bankManager.account.setBalance(transfer);
+			setFee(this.account.getAccountProperties().getFeeMax(), transfer);
+			System.out.println("successful Transfe");
+			updateActiviti(ActivityName.PAY_BILL,transfer,LocalDateTime.now(),"Transfer Funds to the bankManager");
+		}
+		
+	}
+	
+	public void PayBill() {
+		System.out.println("Select\r\n 1. AJBC bank itself (loan return) and the 2. phone, 3. water\r\n"
+				+ "or 4.electric company");
+		int op = scan.nextInt();
+		System.out.println("Enters amount to transfer");
+		double transfer = scan.nextDouble();
+		System.out.println();
+		switch(op) {
+			case 1:
+				TransferFunds(this.bankManager, transfer);
+				this.account.setBalance(-transfer);
+				break;
+			case 2,3,4:
+				TransferFunds(this.bankManager, transfer);
+				this.account.setBalance(-transfer);
+				updateActiviti(ActivityName.PAY_BILL,transfer,LocalDateTime.now(),"Transfer Funds to the phone water or electric company");
+				break;
+				
+		}
+		
+	}
+	
+	public void getLoan() {
+		System.out.println("Enter the requested loan amount and number of monthly payments.");
+		double getLoan = scan.nextDouble();
+		int numberOfMonthly = scan.nextInt();
+		if(getLoan > this.account.getAccountProperties().getMaxLoanAmount())
+			System.out.println("requested loan amount is bigger whith requested loan amount you can get");
+		else {
+			if(numberOfMonthly > 60)
+				System.out.println("mount exceeds the max loan amount");
+			else {
+				this.account.setBalance(getLoan);
+				setFee(this.account.getAccountProperties().getFeeMax(), getLoan);
+				double rate = this.account.getAccountProperties().getIntresRateMax()/100;
+				this.bankManager.account.setBalance(-getLoan + rate);
+				System.out.println("The amount of the monthly return: " + (getLoan+rate)/numberOfMonthly + "\r\n"
+						+ "successful deposit to the account.\r\n"
+						+ "successful withdrawal from the main bank account.");
+				updateActiviti(ActivityName.GET_LOAN,getLoan,LocalDateTime.now(),"The rate is: " + rate + " monthly payment: "+ (getLoan+rate)/numberOfMonthly);
+			}
+		}
+	}
+	
+	private void updateActiviti(ActivityName activityName, Double balanceChange, LocalDateTime timeStamp, String info) {
+		ActivityData activityData = new ActivityData(activityName, balanceChange, timeStamp, info);
+		this.account.setActivityData(activityData);
+		this.bankManager.account.setActivityData(activityData);
+	}
+	
+	public void lock() {
+		this.lock = LocalDateTime.now();
+	}
+	
+	public boolean isLoack() {
+		if(this.lock == null)
+			return false;
+		if(this.lock.getMinute()+30 > LocalDateTime.now().getMinute())
+			return true;
+		return false;
 	}
 
 }

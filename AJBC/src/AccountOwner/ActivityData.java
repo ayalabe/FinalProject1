@@ -7,6 +7,14 @@ public class ActivityData {
 	private ActivityName activityName;
 	private Double balanceChange;
 	private LocalDateTime timeStamp;
+	private String info;
+	
+	public ActivityData(ActivityName activityName, Double balanceChange, LocalDateTime timeStamp, String info) {
+		this.activityName = activityName;
+		this.balanceChange = balanceChange;
+		this.timeStamp = timeStamp;
+		this.info = info;
+	}
 	
 	public ActivityName getActivityName() {
 		return activityName;
@@ -48,15 +56,10 @@ public class ActivityData {
 	}
 
 
-	private String info;
 	
 	
-	public ActivityData(ActivityName activityName, Double balanceChange, LocalDateTime timeStamp, String info) {
-		this.activityName = activityName;
-		this.balanceChange = balanceChange;
-		this.timeStamp = timeStamp;
-		this.info = info;
-	}
+	
+	
 
 
 	@Override

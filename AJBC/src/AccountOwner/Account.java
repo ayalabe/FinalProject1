@@ -14,13 +14,14 @@ public class Account{
 	private ActivityData[] activityData;
 	private double intresRate;
 	private double fee;
+	private int index = 0;
 	
 	public Account(double balance, AccountProperties accountProperties,
 			ActivityData[] activityData, double intresRate, double fee) {
 		this.accountNumber = count++;
 		this.balance = balance;
 		this.accountProperties = accountProperties;
-		this.activityData = activityData;
+		this.activityData = new ActivityData[100];
 		this.intresRate = intresRate;
 		this.fee = fee;
 	}
@@ -34,16 +35,19 @@ public class Account{
 	
 	public void activityData(LocalDate start) {
 		for (int i = 0; this.activityData[i]!=null; i++) {
-			if(this.activityData[i].getTimeStamp().toLocalDate().isAfter(start)) {
+			System.out.println();
+			if(this.activityData[i].getTimeStamp().toLocalDate().isAfter(start) || this.activityData[i].getTimeStamp().toLocalDate().isEqual(start)) {
 				System.out.println(this.activityData[i]);
 			}
 				
 		}
 	}
 	
+	
 	public Account(double balance) {
 		this.accountNumber = count++;
 		this.balance = balance;
+		this.activityData = new ActivityData[100];
 	}
 
 	public double getBalance() {
@@ -62,12 +66,12 @@ public class Account{
 		this.accountProperties = accountProperties;
 	}
 
-	private ActivityData[] getActivityData() {
+	public ActivityData[] getActivityData() {
 		return activityData;
 	}
 
-	private void setActivityData(ActivityData[] activityData) {
-		this.activityData = activityData;
+	public void setActivityData(ActivityData activityData) {
+		this.activityData[index++] = activityData;
 	}
 
 	private double getIntresRate() {

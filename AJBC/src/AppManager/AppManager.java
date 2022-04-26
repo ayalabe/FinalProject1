@@ -7,106 +7,137 @@ import java.util.Scanner;  // Import the Scanner class
 
 import AccountOwner.Account;
 import AccountOwner.AccountOwner;
+import AccountOwner.AccountProperties;
+import AccountOwner.ActivityData;
 import AccountOwner.Credentials;
 import BankManager.BankManager;
 import Person.Person;
 import Person.Phone;
 import Runner.Menu;
 
+/**
+ * Class AppManager controller all the other class
+ * and simulator bank account application where transactions can be done
+ */
 public class AppManager {
-	
-	private static AccountOwner[] AccountOwner = new AccountOwner[100];
+
+	public static AccountOwner[] AccountOwner = new AccountOwner[100];
 	private static AccountOwner currUser;
 	private int index = 0;
-//	private AccountOwner[] users = new AccountOwner[100];
-	private static Scanner scan = new Scanner(System.in);
+	public static Scanner scan = new Scanner(System.in);
 	private BankManager manager;
-	private Menu menu = new Menu();
 	private boolean flageManager = false;
-	
+
 	public int runner() {
-		
-		Scanner sc = new Scanner(System.in);
-		  while(true) {
-		    showMenu();
-		    int opt = Integer.parseInt(sc.next());
-		    if(opt == 0)
-		      break;
-		    callAppManager(opt);
-		  }
+		while(true) {
+			showMenu();
+			int opt = Integer.parseInt(scan.nextLine());
+			if(opt == 0)
+				break;
+			callAppManager(opt);
+		}
 		return 0;
-		
+
 	}
 
 	public void showMenu() {
-		  System.out.println("Please select a action you want to perform:");
-		  System.out.println("1. Open Account\n" + "2. Login Use\n" + "3. Check Balance\n" + "4. Produce Activity Report\n"
-		+ "5. Make a deposit\n" + "6. Withdrawal\n" + "7. Transfer funds\n" + "8. Pay bill\n" + "9. Get Loan");
-		}
-	
-	
+		System.out.println("Please select a action you want to perform:");
+		System.out.println("1. Open Account\n" + "2. Login Use\n" + "3. Check Balance\n" + "4. Produce Activity Report\n"
+				+ "5. Make a deposit\n" + "6. Withdrawal\n" + "7. Transfer funds\n" + "8. Pay bill\n" + "9. Get Loan");
+	}
+
+
 	public void callAppManager(int opt) {
-		  switch(opt){
-		  case 0: 
-			  System.out.println("by by");
-		  case 1:
-			  OpenAccount();
-			  System.out.println(manager);
-			  break;
-		  case 2: 
-			  login();
-			  System.out.println(manager);
-//		  case 3: 
-//			  return new Coppuccino();
-//		  case 4: 
-//			  return new Latte();
-//		  case 5: 
-//			  return new Cola();
-//		  case 6: 
-//			  return new Sprit();
-//		  case 7: 
-//			  return new OrangeJuice();
-//		  case 8: 
-//			  return new AppleJuice();
-		  }
+		switch(opt){
+		case 0: 
+			System.out.println("by by");
+		case 1:
+			OpenAccount();
+			System.out.println(manager);
+			break;
+		case 2: 
+			login();
+			System.out.println(manager);
+		case 3: 
+			this.currUser.checkBalance();
+			break;
+		case 4: 
+			System.out.println("Enter a LocalDate");
+			LocalDate date =addDate();
+			this.currUser.ProduceReport(date);
+			break;
+		case 5: 
+			currUser.MakeDeposit();
+			break;
+		case 6: 
+			currUser.Withdrawal();
+			break;
+		case 7: 
+			currUser.TransferFunds();
+			break;
+		case 8: 
+			currUser.PayBill();
+			break;
+		case 9: 
+			currUser.getLoan();
+			break;
 		}
-	
-	
-	
+	}
+
+
+/**
+ * Login of an existing user by username and password
+ */
 	private void login() {
 		int tim = 0;
-		System.out.println(AccountOwner.length);
 		System.out.println("Enter a user name: {letters and digits only}");
 		String userName = scan.nextLine();
 		for (int i = 0; AccountOwner[i]!=null; i++) {
 			System.out.println(AccountOwner[i].credentials.getUsername());
 			if(AccountOwner[i].credentials.getUsername().equals(userName)) {
-				while(tim < 3) {
-				System.out.println("Enter a password:  {4-8 chars, must contain digit and letter}");
-				String password = scan.nextLine();
-				if(AccountOwner[i].credentials.getPassword().equals(password)) {
-					currUser = AccountOwner[i];
+				if(AccountOwner[i].isLoack()) {
+					System.out.println("Your account is locked for 30 minutes");
+				}
+				else {
+					while(tim < 3) {
+						tim++;
+						System.out.println("Enter a password:  {4-8 chars, must contain digit and letter}");
+						String password = scan.nextLine();
+						if(AccountOwner[i].credentials.getPassword().equals(password)) {
+							currUser = AccountOwner[i];
+							if(AccountOwner[i].credentials.getUsername().equals("manager")) {
+								if(this.manager.getUsersToApprove()!=null)
+									this.manager.setAndApproveAcc();
+							}
+							break;
+						}
+					}
+					if(tim == 3) {
+						AccountOwner[i].lock();
+					}
 				}
 			}
-				if(tim == 3) {
-					//TODO - timer
-				}
+
+
 		}
-				
-			
+
 	}
-		
-	}
-	
+/**
+ * Login of an existing user by phone
+ * 
+ */
 	private void login(Phone phoneNumber) {
-		
+
 		for (int i = 0; AccountOwner[i]!=null; i++) {
 			if(AccountOwner[i].getPhone().getAreaCode() == phoneNumber.getAreaCode() && AccountOwner[i].getPhone().getNumber() == phoneNumber.getNumber()) {
 				currUser = AccountOwner[i];
 			}
 		}
 	}
-	
+/**
+ * @param phoneNumber for user
+ * @return the user with this phone number
+ */
 	public static AccountOwner getOwnerByPhoneNum(Phone phoneNumber) {
 		for (int i = 0; AccountOwner[i]!=null; i++) {
 			if(AccountOwner[i].getPhone().getAreaCode() == phoneNumber.getAreaCode() && AccountOwner[i].getPhone().getNumber() == phoneNumber.getNumber()) {
@@ -115,54 +146,54 @@ public class AppManager {
 		}
 		return null;
 	}
-	
+
 	private Credentials createUserNameAndPassword() {
 		System.out.println("Enter a new user name: {letters and digits only}");
 		String newUserName = scan.nextLine();
-		scan.nextLine();
 		System.out.println("Enter a new password:  {4-8 chars, must contain digit and letter}");
 		String newPassword = scan.nextLine();
-		Credentials credentials = new Credentials("ayala", "aya123");
+		Credentials credentials = new Credentials(newUserName, newPassword);
 		return credentials;
 	}
-	
-	public LocalDate addDate() {
-        
-        LocalDate ld = LocalDate.of(scan.nextInt(), scan.nextInt(), scan.nextInt());
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd. MMM. yyyy");
-//        System.out.println(ld.format(dtf));
-//        scan.close();
-        return ld;
-    }
-	
+
+	public static LocalDate addDate() {
+
+		int day = Integer.parseInt(scan.nextLine());
+		int month = Integer.parseInt(scan.nextLine());
+		int year = Integer.parseInt(scan.nextLine());
+
+		LocalDate ld = LocalDate.of(year, month, day);
+		return ld;
+	}
+
 	public void OpenAccount() {
-		
-		System.out.println("Enter a firstName:\r\n"
-		 		+ "lastName:\r\n"
-		 		+ "Phone Number{areaCode, number}\r\n"
-		 		+ "bitrthDate:LocalDate\r\n"
-		 		+ "monthly Income");
-		 String firstName = scan.nextLine();
-		 String lastName = scan.nextLine();
-		 int areaCode = scan.nextInt();
-		 float number = scan.nextFloat();
-		 LocalDate date = addDate();
-		 int monthlyIncome = scan.nextInt();
-		 Credentials credentials = createUserNameAndPassword();
-		 
+
 		if(!flageManager) {
 			Account account = new Account(70000);
-			this.manager = new BankManager(firstName, lastName, areaCode, number, date, account, monthlyIncome, credentials);
+			Credentials credential = new Credentials("manager", "man123");
+			this.manager = new BankManager("Manager", "man", 052, 5051524, LocalDate.now(), account, 70000, credential);
+			this.AccountOwner[index++] = this.manager;
 			this.flageManager = true;
 		}
-		else {
-			AccountOwner newOwner = new AccountOwner(firstName, lastName, areaCode, number, date, null, monthlyIncome, credentials,this.manager);
-			newOwner.getBankManager().setUsersToApprove(newOwner);
-			this.AccountOwner[index++] = newOwner;
-			System.out.println(newOwner);
-		}
-		 
-		
+
+		System.out.println("Enter a firstName:\r\n"
+				+ "lastName:\r\n"
+				+ "Phone Number{areaCode, number}\r\n"
+				+ "bitrthDate:LocalDate\r\n"
+				+ "monthly Income");
+		String firstName = scan.nextLine();
+		String lastName = scan.nextLine();
+		int areaCode = Integer.parseInt(scan.nextLine());
+		float number = Float.parseFloat(scan.nextLine());;
+		LocalDate date =addDate();
+		double monthlyIncome = Double.parseDouble(scan.nextLine());
+		Credentials credentials = createUserNameAndPassword();
+
+		AccountOwner newOwner = new AccountOwner(firstName, lastName, areaCode, number, date, null, monthlyIncome, credentials,this.manager);
+		newOwner.getBankManager().setUsersToApprove(newOwner);
+		this.AccountOwner[index++] = newOwner;
+		System.out.println(newOwner);
+
 	}
 	private void logout() {
 		currUser = null;

@@ -13,6 +13,10 @@ public enum AccountProperties {
 	private double feeMin;
 	private double feeMax;
 	private double MaxLoanAmount;
+	public double getMaxLoanAmount() {
+		return MaxLoanAmount;
+	}
+
 	private double MaxWithdrawalAmount;
 	
 	AccountProperties(double intresRateMin, double intresRateMax,double feeMin,double feeMax,double MaxLoanAmount,double MaxWithdrawalAmount) {
